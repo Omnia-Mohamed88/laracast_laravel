@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Arr;
-
+use App\Models\Job;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,6 +13,8 @@ use Illuminate\Support\Arr;
 |
 */
 
+
+
 Route::get('/', function () {
     return view('home');
 });
@@ -23,29 +24,14 @@ Route::get('/contact', function () {
 });
 
 Route::get('/jobs/{id}', function ($id) {
-    $jobs = [
-        ['title' => 'Director', 'salary' => '$50,000', 'id' => 1],
-        ['title' => 'Fullstack', 'salary' => '$60,000', 'id' => 2],
-        ['title' => 'Teacher', 'salary' => '$2,000', 'id' => 3],
-    ];
-
-    $job = Arr::first($jobs, fn($job) => $job['id'] == $id);
     
-    if ($job) {
-return view('job' , ['job' => $job]);
-    } else {
-        abort(404, 'Job not found');
-    }
+    $job = Job::find($id);
+     return view('job',['job' => $job]);
     
-    return view('contact');
 });
 
-Route::get('/jobs', function () {
+Route::get('/jobs', function (){
     return view('jobs', [
-        'jobs' => [
-            ['title' => 'Director', 'salary' => '$50,000', 'id' => 1],
-            ['title' => 'Fullstack', 'salary' => '$60,000', 'id' => 2],
-            ['title' => 'Teacher', 'salary' => '$2,000', 'id' => 3],
-        ]
+        'jobs' => Job::all()
     ]);
 });
