@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Job;
+use Illuminate\Http\Request;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,7 +36,8 @@ Route::get('/jobs/{id}', function ($id) {
 });
 
 Route::get('/jobs', function (){
+    $jobs = Job::with('employer')->cursorPaginate(3);
     return view('jobs', [
-        'jobs' => Job::all()
+        'jobs' => $jobs
     ]);
 });
