@@ -29,6 +29,13 @@
                         </div>
                     </div>
                 </div>
+                @if($errors->any())
+                <ul>
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul> 
+                @endif
             </div>
 
             <div class="mt-6 flex items-center justify-end gap-x-6">
