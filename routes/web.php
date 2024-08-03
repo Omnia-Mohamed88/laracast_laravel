@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Job;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\JobController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,76 +18,19 @@ use Illuminate\Http\Request;
 
 
 
-Route::get('/', function () {
-    // return view('home');
-    $jobs = Job::all();
-    dd($jobs[0]);
-});
+Route::view('/','home');
 
-Route::get('/contact', function () {
-    return view('contact');
-});
-Route::get('/jobs/create', function (){
-return view('jobs.create');
-    });
-Route::get('/jobs/{id}', function ($id) {
-    
-    $job = Job::find($id);
-     return view('jobs.show',['job' => $job]);
-    
-});
-//edit
-Route::get('/jobs/{id}/edit', function ($id) {
-    
-    $job = Job::find($id);
-     return view('jobs.edit',['job' => $job]);
-    
-});
+Route::view('/contact','contact');
+// Route::controller(JobController::class)->group(function(){
+// Route::get('/jobs/create', 'create');
+// Route::post('/jobs',  'store');
 
-//update
-Route::patch('/jobs/{id}', function ($id) {
-    
-    request()->validate([
-        'title' => ['required' , 'min:3'],
-        'salary' => ['required']
-        ]);
-        $job = Job::findOrFail($id);
-       
-        // $job->save();
-        $job->update([
-         'title' => request('title'),
-          'salary'=>request('salary')
+// Route::get('/jobs/{job}',  'show');
+// Route::get('/jobs/{job}/edit', 'edit');
+// Route::patch('/jobs/{job}','update');
+// Route::delete('/jobs/{job}','destroy');
 
-        ]);
-        return redirect("/jobs/{$job->id}");
-    });
-//destroy
-Route::delete('/jobs/{id}', function ($id) {
-    
-    $job = Job::findOrFail($id);
-    $job->delete();
-    return redirect('/jobs');
+// Route::get('/jobs',  'index');
+// });
 
-    
-});
-Route::post('/jobs', function (){
-    request()->validate([
-    'title' => ['required' , 'min:3'],
-    'salary' => ['required']
-    ]);
-    Job::create([
-        'title' => request('title'),
-        'salary' => request('salary'),
-        'employer_id' => 2
-    ]);
-    return redirect('/jobs');
-});
-
-Route::get('/jobs', function (){
-    $jobs = Job::with('employer')->cursorPaginate(3);
-    return view('jobs.index', [
-        'jobs' => $jobs
-    ]);
-});
-
-
+Route::resource('jobs',JobController::class);
