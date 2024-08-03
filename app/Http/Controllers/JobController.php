@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Job;
+use Illuminate\Auth\SessionGuard;
+use Illuminate\Support\Facades\Auth; // Add this line
+
+
+
 class JobController extends Controller
 {
     // 
@@ -41,8 +46,19 @@ class JobController extends Controller
 
     public function edit(Job $job)
     {
+        if (Auth::guest()) {
+            return redirect('/login');
+        }
+    
+        // Check if the employer exists and if the current user is not the job's employer
+        if ($job->employer && $job->employer->user->isNot(Auth::user())) {
+            abort(403); // Forbidden if the current user is not the job's employer
+        }
+    
         return view('jobs.edit', ['job' => $job]);
     }
+    
+
 
     public function update(Request $request, Job $job)
     {
